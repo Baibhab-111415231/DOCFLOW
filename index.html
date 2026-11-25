@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AccrediFlow – Accreditation Webapp</title>
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Professional font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    html, body { height: 100%; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+
+    /* hero glow */
+    .hero-bg::before {
+      content:"";
+      position:absolute; inset:-20% -10% auto -10%;
+      height:60vh;
+      background: radial-gradient(40% 60% at 50% 40%, rgba(0,168,232,0.15), transparent 60%);
+      pointer-events:none;
+      filter: blur(28px);
+    }
+  </style>
+</head>
+<body class="bg-[#0b1a2a] text-white">
+
+  <!-- Top Nav -->
+  <header class="sticky top-0 z-40 bg-[#0b1a2a]/90 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center gap-2">
+        <svg viewBox="0 0 64 64" class="h-8 w-8 text-cyan-400" aria-hidden="true">
+          <path d="M32 4 L60 60 H48 L32 28 L16 60 H4 Z" fill="currentColor"/>
+        </svg>
+        <span class="text-lg font-semibold tracking-tight">AccrediFlow</span>
+      </div>
+
+      <!-- Auth Buttons -->
+      <nav class="hidden sm:flex items-center gap-6 text-sm text-white/80">
+        <button id="navAuthBtn" class="hidden px-4 py-2 rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition">
+          Login
+        </button>
+      </nav>
+      <button id="mobileAuthBtn" class="hidden sm:hidden px-3 py-2 rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition">
+        Login
+      </button>
+    </div>
+  </header>
+
+  <!-- Landing Page -->
+  <section id="landing" class="relative hero-bg overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
+      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">
+        Streamline Accreditation Across Institutions
+      </h1>
+      <p class="mt-5 text-lg md:text-xl text-white/70 max-w-2xl mx-auto">
+        Secure, role-based workflows for document submission, verification, and reporting—built for Admins, Coordinators, HODs, and Faculty.
+      </p>
+      <div class="mt-8 flex gap-4 justify-center">
+        <button onclick="showLogin()" class="px-6 py-3 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition text-lg">
+          Login
+        </button>
+        <button onclick="showSignup()" class="px-6 py-3 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition text-lg">
+          Signup
+        </button>
+        <button onclick="showSuperadmin()" class="px-6 py-3 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-black font-semibold transition text-lg">
+          Superadmin
+        </button>
+      </div>
+      <p class="mt-6 text-sm text-white/60">Tip: Use <strong>Superadmin</strong> (no password) to approve institute signups.</p>
+    </div>
+  </section>
+
+  <!-- Login Section -->
+  <section id="login" class="hidden min-h-[80vh] flex items-center justify-center px-4">
+    <div class="w-full max-w-md rounded-xl border border-white/10 bg-white/[0.05] p-6 shadow-2xl">
+      <div class="flex items-center gap-2 justify-center mb-4">
+        <svg viewBox="0 0 64 64" class="h-8 w-8 text-cyan-400"><path d="M32 4 L60 60 H48 L32 28 L16 60 H4 Z" fill="currentColor"/></svg>
+        <span class="text-lg font-semibold">AccrediFlow</span>
+      </div>
+      <h2 class="text-xl font-semibold text-center">Login</h2>
+      <form onsubmit="handleLogin(event)" class="mt-5 space-y-4">
+        <label class="block">
+          <span class="text-sm text-white/70">Email</span>
+          <input id="email" type="email" required
+                 class="mt-1 w-full rounded-md bg-[#11263c] border border-white/10 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 px-3 py-2 outline-none" />
+        </label>
+
+        <label class="block">
+          <span class="text-sm text-white/70">Password</span>
+          <input id="password" type="password" required
+                 class="mt-1 w-full rounded-md bg-[#11263c] border border-white/10 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 px-3 py-2 outline-none" />
+        </label>
+        <label class="block">
+          <span class="text-sm text-white/70">Role</span>
+          <select id="role" required
+                  class="mt-1 w-full rounded-md bg-[#11263c] text-white border border-white/10 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 px-3 py-2 outline-none">
+            <option value="">Select Role</option>
+            <option value="admin">Admin</option>
+            <option value="coordinator">Coordinator</option>
+            <option value="hod">HOD</option>
+            <option value="faculty">Faculty</option>
+          </select>
+        </label>
+        <button type="submit" class="w-full mt-2 px-4 py-2 rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition">
+          Continue
+        </button>
+        <p class="text-sm text-center text-white/60 mt-2">
+          Don’t have an account?
+          <button type="button" onclick="showSignup()" class="text-cyan-400 hover:underline">Signup</button>
+        </p>
+        <button type="button" onclick="backToLanding()" class="w-full mt-3 px-4 py-2 rounded-md border border-white/10 hover:border-white/30 text-white/90 transition">
+          Back
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Signup Section -->
+  <section id="signup" class="hidden min-h-[80vh] flex items-center justify-center px-4">
+    <div class="w-full max-w-lg rounded-xl border border-white/10 bg-white/[0.05] p-6 shadow-2xl">
+      <div class="flex items-center gap-2 justify-center mb-4">
+        <svg viewBox="0 0 64 64" class="h-8 w-8 text-cyan-400"><path d="M32 4 L60 60 H48 L32 28 L16 60 H4 Z" fill="currentColor"/></svg>
+        <span class="text-lg font-semibold">AccrediFlow</span>
+      </div>
+      <h2 class="text-xl font-semibold text-center">Institute Signup</h2>
+
+      <form onsubmit="handleSignup(event)" class="mt-5 space-y-4">
+        <label class="block">
+          <span class="text-sm text-white/70">Institute Name</span>
+          <input id="instituteName" type="text" required 
+            class="mt-1 w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2 outline-none"/>
+        </label>
+
+        <label class="block">
+          <span class="text-sm text-white/70">Institute Type</span>
+          <select id="instituteType" required 
+            class="mt-1 w-full rounded-md bg-[#11263c] text-white border border-white/10 px-3 py-2 outline-none">
+            <option value="">Select Type</option>
+            <option value="university">University</option>
+            <option value="college">College</option>
+            <option value="polytechnic">Polytechnic</option>
+            <option value="school">School</option>
+          </select>
+        </label>
+
+        <label class="block">
+          <span class="text-sm text-white/70">Accreditation Body</span>
+          <select id="accreditationBody" required 
+            class="mt-1 w-full rounded-md bg-[#11263c] text-white border border-white/10 px-3 py-2 outline-none">
+            <option value="">Select Body</option>
+            <option value="naac">NAAC</option>
+            <option value="nba">NBA</option>
+            <option value="nirf">NIRF</option>
+            <option value="qs">QS</option>
+          </select>
+        </label>
+
+        <label class="block">
+          <span class="text-sm text-white/70">Official Email Domain</span>
+          <input id="emailDomain" type="text" placeholder="@yourcollege.edu" required
+            class="mt-1 w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2 outline-none"/>
+        </label>
+
+        <label class="block">
+          <span class="text-sm text-white/70">Admin Name</span>
+          <input id="adminName" type="text" required 
+            class="mt-1 w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2 outline-none"/>
+        </label>
+
+        <label class="block">
+          <span class="text-sm text-white/70">Admin Email</span>
+          <input id="adminEmail" type="email" required 
+            class="mt-1 w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2 outline-none"/>
+        </label>
+
+        <label class="block">
+          <span class="text-sm text-white/70">Admin Phone</span>
+          <input id="adminPhone" type="tel" required 
+            class="mt-1 w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2 outline-none"/>
+        </label>
+
+        <label class="block">
+          <span class="text-sm text-white/70">Password</span>
+          <input id="signupPassword" type="password" required 
+            class="mt-1 w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2 outline-none"/>
+        </label>
+
+        <button type="submit" class="w-full mt-2 px-4 py-2 rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition">
+          Register Institute
+        </button>
+
+        <div class="mt-3">
+          <button type="button" onclick="showLogin()" 
+            class="w-full px-4 py-2 rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition">
+            Already have an account? Login
+          </button>
+        </div>
+
+        <button type="button" onclick="backToLanding()" class="w-full mt-3 px-4 py-2 rounded-md border border-white/10 hover:border-white/30 text-white/90 transition">
+          Back
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Shared Dashboard Header -->
+  <template id="dashboardHeader">
+    <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16 border-b border-white/10 bg-[#0b1a2a]">
+      <div class="flex items-center gap-2">
+        <svg viewBox="0 0 64 64" class="h-7 w-7 text-cyan-400"><path d="M32 4 L60 60 H48 L32 28 L16 60 H4 Z" fill="currentColor"/></svg>
+        <span class="font-semibold">AccrediFlow</span>
+      </div>
+      <button onclick="logout()" class="px-4 py-2 rounded-md bg-white/10 hover:bg-white/20 text-white transition">
+        Logout
+      </button>
+    </div>
+  </template>
+
+  <!-- Dashboards (each now has a sidebar + content area) -->
+  <section id="adminDashboard" class="hidden min-h-screen">
+    <div id="adminHeader"></div>
+    <div class="flex">
+      <div id="adminSidebar"></div>
+      <main id="adminContent" class="flex-1 p-6"></main>
+    </div>
+  </section>
+
+  <section id="coordinatorDashboard" class="hidden min-h-screen">
+    <div id="coordHeader"></div>
+    <div class="flex">
+      <div id="coordinatorSidebar"></div>
+      <main id="coordinatorContent" class="flex-1 p-6"></main>
+    </div>
+  </section>
+
+  <section id="hodDashboard" class="hidden min-h-screen">
+    <div id="hodHeader"></div>
+    <div class="flex">
+      <div id="hodSidebar"></div>
+      <main id="hodContent" class="flex-1 p-6"></main>
+    </div>
+  </section>
+
+  <section id="facultyDashboard" class="hidden min-h-screen">
+    <div id="facultyHeader"></div>
+    <div class="flex">
+      <div id="facultySidebar"></div>
+      <main id="facultyContent" class="flex-1 p-6"></main>
+    </div>
+  </section>
+
+  <section id="superadminDashboard" class="hidden min-h-screen">
+    <div id="superadminHeader"></div>
+    <div class="flex">
+      <div id="superadminSidebar"></div>
+      <main id="superadminContent" class="flex-1 p-6"></main>
+    </div>
+  </section>
+
+  <!-- Templates: Sidebar, Badge, Upload Modal -->
+  <template id="sidebarTemplate">
+    <aside class="w-64 shrink-0 border-r border-white/10 bg-white/5 min-h-[calc(100vh-4rem)] p-4 space-y-2">
+      <nav id="sidebarNav" class="space-y-1"></nav>
+    </aside>
+  </template>
+
+  <template id="badgeTemplate">
+    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"></span>
+  </template>
+
+  <template id="uploadModalTemplate">
+    <div class="upload-modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+      <div class="w-full max-w-lg rounded-xl bg-[#0f2236] border border-white/10 p-4">
+        <h3 class="text-lg font-semibold">Upload Document</h3>
+        <form id="uploadForm" class="mt-3 space-y-3">
+          <input id="docTitle" class="w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2" placeholder="Title" required>
+          <input id="docCategory" class="w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2" placeholder="Category (e.g., NAAC 3.1.2)" required>
+          <input id="docDept" class="w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2" placeholder="Department (optional)">
+          <textarea id="docRemarks" class="w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2" placeholder="Remarks (optional)"></textarea>
+          <input id="docFileName" class="w-full rounded-md bg-[#11263c] border border-white/10 px-3 py-2" placeholder="File name (simulate)" required>
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" onclick="closeModal()" class="px-3 py-2 rounded-md border border-white/10">Cancel</button>
+            <button type="submit" class="px-3 py-2 rounded-md bg-cyan-500 text-black font-semibold">Upload</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </template>
+
+<script src="script.js"></script>
+</body>
+</html>
